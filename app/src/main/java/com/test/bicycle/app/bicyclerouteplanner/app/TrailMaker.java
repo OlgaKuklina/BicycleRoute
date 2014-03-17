@@ -1,11 +1,5 @@
 package com.test.bicycle.app.bicyclerouteplanner.app;
 
-/**
- * Created by olgakuklina on 3/15/2014.
- *
- *
- */
-
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -21,6 +15,11 @@ import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+/**
+ * Created by olgakuklina on 3/15/2014.
+ *
+ * @see <a href='http://stackoverflow.com/questions/14495030/google-map-api-v2-get-driving-directions'>this link</a>
+ */
 public class TrailMaker {
     public final static String MODE_DRIVING = "driving";
     public final static String MODE_WALKING = "walking";

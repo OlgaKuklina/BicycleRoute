@@ -31,11 +31,9 @@ import java.util.ArrayList;
 
 
 public class MainActivity extends FragmentActivity implements
-    GooglePlayServicesClient.ConnectionCallbacks,
-    GooglePlayServicesClient.OnConnectionFailedListener,
+        GooglePlayServicesClient.ConnectionCallbacks,
+        GooglePlayServicesClient.OnConnectionFailedListener,
         LocationListener {
-    // Define an object that holds accuracy and frequency parameters
-    // Global variables
 
     LocationClient mLocationClient;
     boolean mUpdatesRequested;
@@ -61,7 +59,6 @@ public class MainActivity extends FragmentActivity implements
     private GoogleMap googleMap;
     private Marker currentLocationMarker;
     private Polyline line;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,18 +97,7 @@ public class MainActivity extends FragmentActivity implements
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();
-
- /*       if (mPrefs.contains("KEY_UPDATES_ON")) {
-            mUpdatesRequested =
-                    mPrefs.getBoolean("KEY_UPDATES_ON", false);
-
-            // Otherwise, turn off location updates
-        } else {
-            mEditor.putBoolean("KEY_UPDATES_ON", false);
-            mEditor.commit();
-        }*/
     }
-
 
     private void setUpMapIfNeeded() {
         if (googleMap != null) {
@@ -122,36 +108,19 @@ public class MainActivity extends FragmentActivity implements
             return;
         }
         googleMap.setMyLocationEnabled(true);
-
         googleMap.setOnMapClickListener(new MapClickListener());
-
-//        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(center, 12));
-
-//        googleMap.addMarker(new MarkerOptions().title("Origin").position(origin));
-//        googleMap.addMarker(new MarkerOptions().title("Destination").position(dest));
     }
 
     @Override
     protected void onActivityResult(
             int requestCode, int resultCode, Intent data) {
-        // Decide what to do based on the original request code
         switch (requestCode) {
             case CONNECTION_FAILURE_RESOLUTION_REQUEST:
-            /*
-             * If the result code is Activity.RESULT_OK, try
-             * to connect again
-             */
                 switch (resultCode) {
                     case Activity.RESULT_OK:
-                    /*
-                     * Try the request again
-                     */
-
                         break;
                 }
-
         }
-
     }
 
     @Override
@@ -176,8 +145,8 @@ public class MainActivity extends FragmentActivity implements
                 Double.toString(location.getLatitude()) + "," +
                 Double.toString(location.getLongitude());
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-        LatLng latlng = new LatLng(location.getLatitude(),location.getLongitude());
-        if(currentLocationMarker != null){
+        LatLng latlng = new LatLng(location.getLatitude(), location.getLongitude());
+        if (currentLocationMarker != null) {
             currentLocationMarker.remove();
         }
 
@@ -185,10 +154,7 @@ public class MainActivity extends FragmentActivity implements
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.bike))
                 .anchor(0.5f, 1.0f) // Anchors the marker on the bottom left
                 .position(latlng));
-
     }
-
-
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
@@ -196,28 +162,16 @@ public class MainActivity extends FragmentActivity implements
 
     @Override
     protected void onStop() {
-        // If the client is connected
         if (mLocationClient.isConnected()) {
-            /*
-             * Remove location updates for a listener.
-             * The current Activity is the listener, so
-             * the argument is "this".
-             */
             mLocationClient.removeLocationUpdates(this);
         }
-        /*
-         * After disconnect() is called, the client is
-         * considered "dead".
-         */
         mLocationClient.disconnect();
         super.onStop();
     }
 
-
     private class MapClickListener implements GoogleMap.OnMapClickListener {
         private LatLng origin;
         private LatLng dest;
-
 
         @Override
         public void onMapClick(LatLng latLng) {
@@ -238,12 +192,9 @@ public class MainActivity extends FragmentActivity implements
                 markerOptions.title("Destination");
 
                 makeTrail(origin, dest);
-
-
             }
             googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
             googleMap.addMarker(markerOptions);
-
         }
 
         public void makeTrail(LatLng origin, LatLng dest) {
@@ -258,26 +209,24 @@ public class MainActivity extends FragmentActivity implements
             Document doc = md.getDocument(origin, dest, TrailMaker.MODE_BICYCLING);
             ArrayList<LatLng> points = md.getDirection(doc);
             Log.i("MainActivity", "points # = " + points.size());
-            if(points.size() == 0) {
+            if (points.size() == 0) {
                 return;
             }
 
-           ArrayList<LatLng> representatives = new ArrayList<LatLng>(REPRESENTATIVE_COUNT);
+            ArrayList<LatLng> representatives = new ArrayList<LatLng>(REPRESENTATIVE_COUNT);
 
-            int step = points.size()/REPRESENTATIVE_COUNT;
+            int step = points.size() / REPRESENTATIVE_COUNT;
             if (step == 0) {
                 representatives.addAll(points);
-            }
-            else {
-                for (int i = 0; i < points.size(); i+=step) {
+            } else {
+                for (int i = 0; i < points.size(); i += step) {
                     representatives.add(points.get(i));
                 }
 
                 LatLng end = points.get(points.size() - 1);
-                if(representatives.get(representatives.size() - 1) != end) {
+                if (representatives.get(representatives.size() - 1) != end) {
                     representatives.add(end);
                 }
-
             }
 
             double[] elevations = elevationService.getPath(representatives);
@@ -292,8 +241,7 @@ public class MainActivity extends FragmentActivity implements
 
                 if (elevations[representativeIndex - 1] < elevations[representativeIndex]) {
                     options.color(Color.RED);
-                }
-                else {
+                } else {
                     options.color(Color.BLUE);
                 }
                 googleMap.addPolyline(options);
@@ -302,18 +250,7 @@ public class MainActivity extends FragmentActivity implements
                 representativeIndex++;
             }
 
-
-/*
-            PolylineOptions options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
-            for (int i = 0; i < points.size(); i++) {
-                LatLng point = points.get(i);
-                options.add(point);
-            }
-            line = googleMap.addPolyline(options);*/
-
         }
 
     }
-
-
 }
